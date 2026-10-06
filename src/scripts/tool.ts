@@ -35,6 +35,7 @@ let file: File | null = null;
 let source: Success | null = null;
 let result: Success | null = null;
 let shown: Success | null = null;
+const drafts: Partial<Record<PropertyId, string>> = {};
 let worker: Worker | null = null;
 let timeout: ReturnType<typeof setTimeout> | null = null;
 let revision = 0;
@@ -145,8 +146,21 @@ function actionControl(id: PropertyId, action: string): HTMLInputElement {
 }
 function refreshFields(): void {
   for (const property of properties) {
-    valueControl(property.id).disabled =
+    const control = valueControl(property.id);
+    const keep = actionControl(property.id, 'keep').checked;
+    const removed =
       removeXmp.checked || actionControl(property.id, 'remove').checked;
+    const value = keep || removed ? '' : (drafts[property.id] ?? '');
+    if (control.value !== value) control.value = value;
+    control.placeholder = !source
+      ? ''
+      : removed
+        ? e.removedValue
+        : keep
+          ? source.values[property.id] || e.missingValue
+          : e.newValue;
+    control.disabled = removed;
+    if (keep || removed) control.removeAttribute('aria-invalid');
     for (const action of ['keep', 'set', 'remove'])
       actionControl(property.id, action).disabled = removeXmp.checked;
   }
@@ -158,7 +172,8 @@ function restore(): void {
   form.reset();
   for (const property of properties) {
     const control = valueControl(property.id);
-    control.value = source?.values[property.id] ?? '';
+    drafts[property.id] = source?.values[property.id] ?? '';
+    control.value = '';
     control.removeAttribute('aria-invalid');
   }
   xml.value = source?.xml ?? '';
@@ -333,8 +348,10 @@ function choose(files: FileList | File[]): void {
 }
 for (const property of properties) {
   valueControl(property.id).addEventListener('input', () => {
+    drafts[property.id] = valueControl(property.id).value;
     actionControl(property.id, 'set').checked = true;
     valueControl(property.id).removeAttribute('aria-invalid');
+    refreshFields();
     invalidate();
   });
   for (const action of ['keep', 'set', 'remove'])

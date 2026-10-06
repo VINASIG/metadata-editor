@@ -236,7 +236,7 @@ const schema = {
                       {['Alt', 'Bag', 'Seq'].includes(property.kind) ? (
                         <textarea
                           id={`value-${property.id}`}
-                          rows={property.id === 'description' ? 3 : 2}
+                          rows="2"
                           maxlength="8192"
                           spellcheck="false"
                           data-value={property.id}

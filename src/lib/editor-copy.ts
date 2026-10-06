@@ -7,10 +7,13 @@ export const editorCopy = {
     empty: 'Chọn ảnh để xem metadata và bắt đầu chỉnh sửa.',
     editTitle: 'Thông tin muốn chỉnh sửa',
     editHint:
-      'Các trường dưới đây thuộc XMP. Trường khác được giữ nguyên. Nhập giá trị sẽ chọn Đặt mới. Xóa một trường sẽ xóa toàn bộ thuộc tính đó, gồm các bản ngôn ngữ khác.',
+      'Các trường dưới đây thuộc XMP. Giữ nguyên hiển thị mờ giá trị gốc. Trường khác được giữ nguyên. Nhập giá trị sẽ chọn Đặt mới. Xóa một trường sẽ xóa toàn bộ thuộc tính đó, gồm các bản ngôn ngữ khác.',
     exifHint:
       'EXIF và IPTC được giữ mặc định. Sửa tác giả hoặc ngày trong XMP không đồng thời sửa thông tin đó trong EXIF hay IPTC. Xem các nhóm metadata để đối chiếu.',
     actions: { keep: 'Giữ nguyên', set: 'Đặt mới', remove: 'Xóa trường' },
+    missingValue: 'Chưa có giá trị XMP',
+    newValue: 'Nhập giá trị mới',
+    removedValue: 'Trường này sẽ bị xóa',
     labels: {
       title: 'Tiêu đề',
       description: 'Mô tả',
@@ -94,7 +97,7 @@ export const editorCopy = {
     empty: 'Choose an image to inspect its metadata and start editing.',
     editTitle: 'Information to edit',
     editHint:
-      'These fields belong to XMP. Other fields are preserved. Typing selects Set value. Removing a field removes the whole property, including other language versions.',
+      'These fields belong to XMP. Keep original shows a muted preview of the original value. Other fields are preserved. Typing selects Set value. Removing a field removes the whole property, including other language versions.',
     exifHint:
       'EXIF and IPTC are preserved by default. Editing an author or date in XMP does not also edit EXIF or IPTC. Inspect the metadata groups to compare them.',
     actions: {
@@ -102,6 +105,9 @@ export const editorCopy = {
       set: 'Set value',
       remove: 'Remove field',
     },
+    missingValue: 'No XMP value yet',
+    newValue: 'Enter a new value',
+    removedValue: 'This field will be removed',
     labels: {
       title: 'Title',
       description: 'Description',
