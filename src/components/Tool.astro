@@ -1,0 +1,459 @@
+---
+import { Upload, Download, Trash } from '@lucide/astro';
+import SiteFooter from './SiteFooter.astro';
+import SitePreferences from './SitePreferences.astro';
+import ThemeInit from './ThemeInit.astro';
+import { copy } from '../lib/copy.ts';
+import { editorCopy } from '../lib/editor-copy.ts';
+import { properties } from '../lib/xmp.ts';
+import '../styles/editor.css';
+import { origin, repository } from '../lib/site.ts';
+import '../styles/tokens.css';
+import '../styles/app.css';
+import '../styles/control-surfaces.css';
+import '../styles/metadata.css';
+import '../styles/site-chrome.css';
+interface Props {
+  lang: 'vi' | 'en';
+}
+const { lang } = Astro.props;
+const c = copy[lang];
+const e = editorCopy[lang];
+const title = e.title;
+const description = e.description;
+const canonical = origin + (lang === 'en' ? 'en/' : '');
+const revision = process.env['GITHUB_SHA'];
+const source =
+  revision && /^[a-f0-9]{40}$/.test(revision)
+    ? `${repository}/tree/${revision}`
+    : repository;
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: title,
+  url: canonical,
+  description,
+  inLanguage: lang,
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web browser',
+  isAccessibleForFree: true,
+  publisher: {
+    '@type': 'Organization',
+    name: 'VINASIG',
+    url: 'https://vinasig.io.vn/',
+  },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <ThemeInit />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="referrer" content="no-referrer" />
+    {revision && <meta name="source-revision" content={revision} />}
+    <title>{title} | VINASIG</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="vi" href={origin} />
+    <link rel="alternate" hreflang="en" href={`${origin}en/`} />
+    <link rel="alternate" hreflang="x-default" href={origin} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | VINASIG`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'vi' ? 'vi_VN' : 'en_US'} />
+    <link rel="icon" type="image/svg+xml" href="/brand/mark.svg" />
+    {[16, 32, 48].map((size) => (
+      <link
+        rel="icon"
+        type="image/png"
+        sizes={`${size}x${size}`}
+        href={`/brand/favicon-${size}.png`}
+      />
+    ))}
+    <link
+      rel="preload"
+      href="/fonts/SpaceGrotesk-VariableFont_wght.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/fonts/font.css" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body data-language={lang} data-mode="editor">
+    <a class="skip-link" href="#tool">
+      {c.skip}
+    </a>
+    <div class="app-shell" data-site-shell>
+      <header class="site-header" data-site-header>
+        <a
+          class="brand"
+          data-brand-logo
+          href="https://vinasig.io.vn/"
+          aria-label={c.home}
+        >
+          <picture>
+            <source
+              media="(prefers-color-scheme: dark)"
+              srcset="/brand/reversed.svg"
+            />
+            <script is:inline>
+              document.currentScript?.previousElementSibling?.setAttribute(
+                'media',
+                document.documentElement.dataset.theme === 'dark'
+                  ? 'all'
+                  : 'not all',
+              );
+            </script>
+            <img
+              src="/brand/primary-color.svg"
+              alt="VINASIG"
+              width="540"
+              height="140"
+            />
+          </picture>
+        </a>
+        <SitePreferences lang={lang} alternate={lang === 'vi' ? '/en/' : '/'} />
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <h1 id="page-title">{title}</h1>
+          <p>{description}</p>
+        </section>
+        <div id="tool" class="editor-tool">
+          <section aria-labelledby="input-title">
+            <h2 id="input-title" class="sr-only">
+              {c.inputTitle}
+            </h2>
+            <div id="dropzone" class="dropzone">
+              <label class="file-trigger">
+                <Upload size={20} aria-hidden="true" />
+                {c.choose}
+                <input
+                  id="file"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                  aria-describedby="file-help"
+                  disabled
+                />
+              </label>
+              <p id="file-help" class="supporting">
+                {c.drop} {e.types}
+              </p>
+            </div>
+            <div class="input-feedback">
+              <p class="supporting privacy">{c.privacy}</p>
+              <button type="button" id="clear" class="clear-button" disabled>
+                <Trash size={18} aria-hidden="true" />
+                {c.clear}
+              </button>
+            </div>
+            <p id="status" class="status" role="status" aria-live="polite">
+              {e.empty}
+            </p>
+            <noscript>
+              <p>{c.noScript}</p>
+            </noscript>
+            <div id="file-info" class="editor-overview" hidden>
+              <img
+                id="source-preview"
+                src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                alt={c.originalPreview}
+                hidden
+              />
+              <div>
+                <h2 id="selected-file-name" data-user-content>
+                  {c.overview}
+                </h2>
+                <dl class="summary-facts">
+                  <div>
+                    <dt>{c.format}</dt>
+                    <dd id="file-format" data-user-content></dd>
+                  </div>
+                  <div>
+                    <dt>{c.fileSize}</dt>
+                    <dd id="file-size" data-user-content></dd>
+                  </div>
+                  <div>
+                    <dt>{c.dimensions}</dt>
+                    <dd id="file-dimensions" data-user-content></dd>
+                  </div>
+                </dl>
+                <p id="xmp-presence" class="supporting"></p>
+              </div>
+            </div>
+          </section>
+          <div id="editor-workspace" class="editor-workspace" hidden>
+            <section class="edit-panel" aria-labelledby="edit-title">
+              <h2 id="edit-title">{e.editTitle}</h2>
+              <p class="supporting">{e.editHint}</p>
+              <p class="supporting">{e.exifHint}</p>
+              <p id="credentials" class="editor-notice" hidden>
+                {e.credentials}
+              </p>
+              <button id="reset-edits" class="clear-button" type="button">
+                {e.resetEdits}
+              </button>
+              <form id="edit-form" novalidate>
+                <div id="property-fields">
+                  {properties.map((property) => (
+                    <fieldset
+                      class="property-field"
+                      data-property={property.id}
+                    >
+                      <legend>{e.labels[property.id]}</legend>
+                      <div class="property-actions">
+                        {(['keep', 'set', 'remove'] as const).map((action) => (
+                          <label>
+                            <input
+                              type="radio"
+                              name={`action-${property.id}`}
+                              value={action}
+                              checked={action === 'keep'}
+                            />
+                            {e.actions[action]}
+                          </label>
+                        ))}
+                      </div>
+                      <label class="sr-only" for={`value-${property.id}`}>
+                        {e.labels[property.id]}
+                      </label>
+                      {['Alt', 'Bag', 'Seq'].includes(property.kind) ? (
+                        <textarea
+                          id={`value-${property.id}`}
+                          rows={property.id === 'description' ? 3 : 2}
+                          maxlength="8192"
+                          spellcheck="false"
+                          data-value={property.id}
+                          data-user-content
+                          aria-describedby={`hint-${property.id}`}
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          id={`value-${property.id}`}
+                          maxlength="8192"
+                          autocomplete="off"
+                          spellcheck="false"
+                          data-value={property.id}
+                          data-user-content
+                          aria-describedby={`hint-${property.id}`}
+                          inputmode={
+                            property.kind === 'rating' ? 'decimal' : 'text'
+                          }
+                        />
+                      )}
+                      <p
+                        id={`hint-${property.id}`}
+                        class="supporting field-hint"
+                      >
+                        {property.kind === 'date' ? (
+                          e.dateHint
+                        ) : property.kind === 'rating' ? (
+                          e.ratingHint
+                        ) : property.kind === 'Bag' ||
+                          property.kind === 'Seq' ? (
+                          e.listHint
+                        ) : (
+                          <code>{property.prefix + '.' + property.name}</code>
+                        )}
+                      </p>
+                    </fieldset>
+                  ))}
+                </div>
+                <fieldset class="output-options">
+                  <legend>{c.selection}</legend>
+                  <label class="block-choice">
+                    <input type="checkbox" id="remove-xmp" />
+                    <span>
+                      {e.removeAll}
+                      <small>{e.removeAllHint}</small>
+                    </span>
+                  </label>
+                  <label class="block-choice">
+                    <input type="checkbox" id="remove-other" />
+                    <span>
+                      {e.removeOther}
+                      <small>{e.removeOtherHint}</small>
+                    </span>
+                  </label>
+                </fieldset>
+                <button id="process" type="submit" class="primary" disabled>
+                  {e.process}
+                </button>
+              </form>
+              <details id="advanced">
+                <summary>{e.advanced}</summary>
+                <p class="supporting">{e.advancedHint}</p>
+                <label for="xmp-xml">{e.xmlLabel}</label>
+                <textarea
+                  id="xmp-xml"
+                  rows="12"
+                  spellcheck="false"
+                  autocomplete="off"
+                  aria-describedby="xml-help"
+                  data-user-content
+                ></textarea>
+                <p id="xml-help" class="supporting">
+                  {e.xmlHint}
+                </p>
+                <div class="form-actions">
+                  <button id="apply-xml" class="primary" type="button" disabled>
+                    {e.xmlProcess}
+                  </button>
+                  <button id="download-xmp" type="button" class="clear-button">
+                    {e.downloadXmp}
+                  </button>
+                </div>
+              </details>
+            </section>
+            <section class="inspect-panel" aria-labelledby="inspect-title">
+              <h2 id="inspect-title">{c.metadataTitle}</h2>
+              <div id="output-result" class="editor-output" hidden>
+                <h3>{e.outputTitle}</h3>
+                <img
+                  id="image-preview"
+                  src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                  alt={c.preview}
+                  hidden
+                />
+                <dl id="sizes" class="facts"></dl>
+                <label for="filename">{c.filename}</label>
+                <input
+                  type="text"
+                  id="filename"
+                  maxlength="120"
+                  spellcheck="false"
+                  autocomplete="off"
+                  aria-describedby="name-help"
+                  data-user-content
+                />
+                <p id="name-help" class="supporting">
+                  {c.filenameHint}
+                </p>
+                <div class="form-actions">
+                  <button id="download" class="primary" type="button" disabled>
+                    <Download size={18} aria-hidden="true" />
+                    {c.download}
+                  </button>
+                </div>
+                <details id="verification">
+                  <summary>{c.hash}</summary>
+                  <p>{c.same}</p>
+                  <dl id="hashes" class="facts" data-user-content></dl>
+                </details>
+              </div>
+              <div class="form-actions metadata-views">
+                <button
+                  id="view-original"
+                  class="group-button"
+                  type="button"
+                  aria-pressed="true"
+                >
+                  {e.original}
+                </button>
+                <button
+                  id="view-processed"
+                  class="group-button"
+                  type="button"
+                  aria-pressed="false"
+                  disabled
+                >
+                  {e.processed}
+                </button>
+              </div>
+              <p class="supporting">{e.remaining}</p>
+              <div class="metadata-toolbar">
+                <div class="search-field">
+                  <label for="search">{c.search}</label>
+                  <input type="search" id="search" autocomplete="off" />
+                </div>
+                <button id="report" class="clear-button" type="button">
+                  <Download size={18} aria-hidden="true" />
+                  {c.downloadReport}
+                </button>
+              </div>
+              <nav
+                id="metadata-groups"
+                class="metadata-groups"
+                aria-label={c.groups}
+              ></nav>
+              <p id="field-count" class="supporting" aria-live="polite"></p>
+              <div id="metadata-fields" class="metadata-fields"></div>
+              <p id="no-results" class="supporting" hidden>
+                {c.noResults}
+              </p>
+              <details id="protected">
+                <summary>{c.locked}</summary>
+                <p class="supporting">{c.lockedHint}</p>
+                <dl id="protected-list" class="facts" data-user-content></dl>
+              </details>
+              <details>
+                <summary>{c.coverage}</summary>
+                <p>{e.coverage}</p>
+                <p
+                  id="parser-warnings"
+                  class="supporting"
+                  data-user-content
+                  hidden
+                ></p>
+                <p class="supporting">{c.binaryHint}</p>
+              </details>
+            </section>
+          </div>
+        </div>
+        <section class="notes" aria-labelledby="notes-title">
+          <h2 id="notes-title">{c.notes}</h2>
+          <details>
+            <summary>{e.faqScope}</summary>
+            <p>{e.faqScopeText}</p>
+          </details>
+          <details>
+            <summary>{e.faqQuality}</summary>
+            <p>{e.faqQualityText}</p>
+          </details>
+          <details>
+            <summary>{e.faqPrivacy}</summary>
+            <p>{e.faqPrivacyText}</p>
+          </details>
+          <details>
+            <summary>{e.faqSupport}</summary>
+            <p>{e.faqSupportText}</p>
+          </details>
+          <nav
+            class="tool-choice"
+            aria-label={lang === 'vi' ? 'Công cụ liên quan' : 'Related tools'}
+          >
+            <a
+              href={
+                'https://metadata.vinasig.io.vn/' + (lang === 'en' ? 'en/' : '')
+              }
+            >
+              {e.footerReader}
+            </a>
+            <a
+              href={
+                'https://clean.vinasig.io.vn/' + (lang === 'en' ? 'en/' : '')
+              }
+            >
+              {e.footerCleaner}
+            </a>
+          </nav>
+        </section>
+      </main>
+      <SiteFooter
+        lang={lang}
+        source={source}
+        issues={`${repository}/issues`}
+        licenses="/licenses/NOTICE.txt"
+      />
+    </div>
+    <script>
+      import '../scripts/tool.ts';
+    </script>
+  </body>
+</html>
