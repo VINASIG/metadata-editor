@@ -36,7 +36,7 @@ export const editorCopy = {
     removeOtherHint:
       'Bỏ EXIF riêng tư, IPTC, văn bản, ảnh thu nhỏ và các khối tùy chọn được hỗ trợ. Giữ thông tin cần cho hướng hiển thị, màu sắc, độ trong suốt và chuyển động.',
     credentials:
-      'Ảnh có bản khai báo nguồn gốc C2PA. Công cụ sẽ bỏ bản khai báo này khi metadata thay đổi. Công cụ không ký lại hoặc chứng nhận nguồn gốc ảnh.',
+      'Ảnh gốc có bản khai báo nguồn gốc C2PA. Công cụ sẽ bỏ bản khai báo này khi metadata thay đổi. Công cụ không ký lại hoặc chứng nhận nguồn gốc ảnh.',
     process: 'Tạo ảnh với metadata mới',
     xmlProcess: 'Tạo ảnh từ XML đã sửa',
     advanced: 'Chỉnh sửa XMP dạng XML',
@@ -74,9 +74,9 @@ export const editorCopy = {
       'Ảnh vượt quá 100 MiB hoặc XMP sau giải nén vượt quá 1 MiB. Không tạo ảnh mới.',
     invalidField:
       'Giá trị mới chưa hợp lệ. Kiểm tra trường được đánh dấu và hướng dẫn bên dưới.',
-    sourceXmp: 'XMP đang có trong ảnh',
+    sourceXmp: 'XMP đang có trong ảnh gốc',
     newXmp:
-      'Ảnh chưa có XMP. Giữ nguyên mọi trường sẽ giữ nguyên file. Nhập một trường để tạo XMP.',
+      'Ảnh gốc chưa có XMP. Giữ nguyên mọi trường sẽ giữ nguyên file. Nhập một trường để tạo XMP.',
     unsupported:
       'Định dạng hoặc cấu trúc metadata này chưa được hỗ trợ để chỉnh sửa an toàn. Bạn vẫn có thể dùng công cụ đọc metadata.',
     invalid:
@@ -127,7 +127,7 @@ export const editorCopy = {
     removeOtherHint:
       'Remove supported private EXIF, IPTC, text, thumbnails and optional blocks. Preserve necessary orientation, color, transparency and animation information.',
     credentials:
-      'This image contains a C2PA origin claim. The tool removes it when metadata changes. It does not sign the image again or certify its origin.',
+      'The original image contains a C2PA origin claim. The tool removes it when metadata changes. It does not sign the image again or certify its origin.',
     process: 'Create image with new metadata',
     xmlProcess: 'Create image from edited XML',
     advanced: 'Edit XMP as XML',
@@ -167,9 +167,9 @@ export const editorCopy = {
       'The image exceeds 100 MiB or the decompressed XMP exceeds 1 MiB. No new image was created.',
     invalidField:
       'A new value is invalid. Check the marked field and its guidance.',
-    sourceXmp: 'Existing image XMP',
+    sourceXmp: 'Existing XMP in the original image',
     newXmp:
-      'This image has no XMP. Keeping all fields preserves the file. Enter a field to create XMP.',
+      'The original image has no XMP. Keeping all fields preserves the file. Enter a field to create XMP.',
     unsupported:
       'This format or metadata structure is not supported for safe editing. You can still use the metadata reader.',
     invalid:
