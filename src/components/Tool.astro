@@ -1,6 +1,8 @@
 ---
 import { Upload, Download, Trash } from '@lucide/astro';
 import SiteFooter from './SiteFooter.astro';
+import MetadataTools from './MetadataTools.astro';
+import MetadataPager from './MetadataPager.astro';
 import SitePreferences from './SitePreferences.astro';
 import ThemeInit from './ThemeInit.astro';
 import { copy } from '../lib/copy.ts';
@@ -188,6 +190,15 @@ const schema = {
             </div>
           </section>
           <div id="editor-workspace" class="editor-workspace" hidden>
+            <nav
+              class="editor-sections"
+              aria-label={
+                lang === 'vi' ? 'Các phần làm việc' : 'Workspace sections'
+              }
+            >
+              <a href="#edit-title">{e.editTitle}</a>
+              <a href="#inspect-title">{c.metadataTitle}</a>
+            </nav>
             <section class="edit-panel" aria-labelledby="edit-title">
               <h2 id="edit-title">{e.editTitle}</h2>
               <p class="supporting">{e.editHint}</p>
@@ -383,7 +394,9 @@ const schema = {
                 aria-label={c.groups}
               ></nav>
               <p id="field-count" class="supporting" aria-live="polite"></p>
+              <MetadataPager lang={lang} position="above" />
               <div id="metadata-fields" class="metadata-fields"></div>
+              <MetadataPager lang={lang} position="below" />
               <p id="no-results" class="supporting" hidden>
                 {c.noResults}
               </p>
@@ -424,26 +437,8 @@ const schema = {
             <summary>{e.faqSupport}</summary>
             <p>{e.faqSupportText}</p>
           </details>
-          <nav
-            class="tool-choice"
-            aria-label={lang === 'vi' ? 'Công cụ liên quan' : 'Related tools'}
-          >
-            <a
-              href={
-                'https://metadata.vinasig.io.vn/' + (lang === 'en' ? 'en/' : '')
-              }
-            >
-              {e.footerReader}
-            </a>
-            <a
-              href={
-                'https://clean.vinasig.io.vn/' + (lang === 'en' ? 'en/' : '')
-              }
-            >
-              {e.footerCleaner}
-            </a>
-          </nav>
         </section>
+        <MetadataTools lang={lang} active="editor" />
       </main>
       <SiteFooter
         lang={lang}

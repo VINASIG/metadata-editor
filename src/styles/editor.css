@@ -22,11 +22,47 @@
 }
 
 .editor-workspace {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: start;
-  gap: 2rem;
   border-top: 1px solid var(--color-border);
+  padding-top: 1.5rem;
+}
+
+.editor-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.editor-sections a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.edit-panel > .supporting {
+  max-width: 58rem;
+}
+
+#edit-title,
+#inspect-title {
+  scroll-margin-top: 1.5rem;
+}
+
+#property-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: 0 1.5rem;
+}
+
+.output-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 26rem), 1fr));
+  gap: 0 1.5rem;
+}
+
+.inspect-panel {
+  border-top: 1px solid var(--color-border);
+  margin-top: 2rem;
   padding-top: 1.5rem;
 }
 
@@ -130,21 +166,11 @@ textarea:focus-visible {
   overflow-wrap: normal;
 }
 
-.tool-choice {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
-}
-
 [hidden] {
   display: none !important;
 }
 
 @media (width <= 760px) {
-  .editor-workspace {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
   .editor-overview {
     grid-template-columns: minmax(0, 1fr);
     gap: 1rem;
